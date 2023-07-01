@@ -1,5 +1,5 @@
 本周学习了第三课第一周的内容
-
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 * [K\-means算法](#k-means算法)
   * [优化目标](#优化目标)
   * [随机初始化](#随机初始化)
