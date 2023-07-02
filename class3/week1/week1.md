@@ -83,7 +83,7 @@ k-means的**代价函数**为：
 
 ### Elbow method:肘部法则
 
-假设随着k的增大，$J$的大小呈现以下的形状，类似于人的手臂，而k=3的位置类似于手臂的肘部
+假设随着k的增大，$J$的大小呈现以下的形状，类似于人的手臂，而k=3的位置类似于手臂的**肘部**
 
 ![img](assets/1241311-20180724150811806-1949914048.png)
 
@@ -156,7 +156,7 @@ k-means的**代价函数**为：
 
 有${x_1,x_2...x_m}$个样本，它们都是实数，在下图中标记出了整个数据集，图中的横轴是x轴，其取值分布广泛。猜测这些样本来自一个高斯分布的总体，每一个样本$x_i$服从高斯分布，即$x_i$~$N(\mu,\sigma^2)$，但不知道具体的$\mu$和$\sigma^2$的值。
 
-参数估计问题就是给定数据集，估算出$\mu$和$\sigma^2$的值。根据$x_i$的分布情况画出蓝色的曲线如图所示。
+参数估计问题就是给定数据集，估算出参数$\mu$和$\sigma^2$的值。根据$x_i$的分布情况画出蓝色的曲线如图所示。
 
 ![2. Gaussian distribution - Parameter estimation](assets/1907480-20200214200710354-1990062063.png)
 
@@ -167,6 +167,8 @@ k-means的**代价函数**为：
 
 
 <span style="font-size:25px">$\sigma=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i-\mu)^2}$</span>
+
+
 
 ## 异常检测算法（重点）
 
@@ -218,3 +220,56 @@ k-means的**代价函数**为：
 ## 开发和评估一个异常检测算法
 
 当你尝试为特定应用开发学习算法时，你需要做出很多选择，如选择特征值。假如我们有一种评估学习算法的方法，那么决策将会容易很多。
+
+假设我们有一些带标签的数据，标签为异常和非异常两种（y=0为正常，y=1为异常）。有对应的训练集、交叉验证集和测试集。
+
+异常检测算法是一个非监督学习算法，意味着我们无法根据结果变量y的值来告诉我们数据是否真的是异常的。我们需要另一种方法来帮助检验算法是否有效。当我们开发一个异常检测系统时，我们从带标记（异常或正常）的数据着手，我们从其中选择一部分正常数据用于构建训练集，然后用剩下的正常数据和异常数据混合的数据构成交叉检验集和测试集。
+
+**在异常检测中，常用的评价指标包括准确率、召回率、F1分数等。下面给出这些评价指标的公式及其意义：**
+
+**准确率（Accuracy）**：
+
+$$Accuracy = \frac{TP+TN}{TP+FP+TN+FN}$$
+
+其中，TP（True Positive）表示真正例的数量，TN（True Negative）表示真反例的数量，FP（False Positive）表示假正例的数量，FN（False Negative）表示假反例的数量。准确率表示分类器正确分类的样本数占总样本数的比例。
+
+**召回率（Recall）**：
+
+$$Recall = \frac{TP}{TP+FN}$$
+
+召回率表示分类器正确识别为正例的样本数占所有实际正例样本数的比例。
+
+**F1分数：**
+
+$$F1 = 2 \times \frac{Precision \times Recall}{Precision+Recall}$$
+
+其中，Precision（精确率）为：
+
+$$Precision = \frac{TP}{TP+FP}$$
+
+F1分数是准确率和召回率的调和平均数，能够综合考虑分类器的精确率和召回率。
+
+
+
+**具体的评价方法：**
+
+1. Fit model $p(\boldsymbol{x})$ on training set ${x^{(1)},x^{(2)},...x^{(m)}}$ 根据训练集数据，我们估计特征的平均值和方差并构建$p(\boldsymbol{x})$函数。
+
+2. On a cross validation/test example $x$, predict $y = \left\{
+   \begin{aligned}
+   1 && \text{if } p(\boldsymbol{x}) < \epsilon \\
+   0 && \text{if } p(\boldsymbol{x}) > \epsilon \\
+   \end{aligned}
+   \right.$
+
+   对交叉检验集/测试集，我们尝试使用不同的$\epsilon$值作为阀值，并预测数据是否异常，根据$F_1$值或者查准率与召回率的比例来选择$\epsilon$。
+
+3. Possible evaluation metrics: 可能的评估指标
+
+- True positive, false positive, false negative, true negative
+- Precision/Recall 查准率/召回率
+- $F_1$ -score$F_1$积分
+
+​	Can also use cross validation set to choose parameter$\epsilon$.
+
+​	选出$\epsilon$后，针对测试集进行预测，计算异常检验系统的$F_1$值，或者查准率与召回率之比。
